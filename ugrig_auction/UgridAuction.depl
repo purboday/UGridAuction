@@ -1,0 +1,10 @@
+// Deploy on all BBB
+app UgridAuction {
+	on all BuyerActor1;
+	on all BuyerActor2;
+	on all BuyerActor3;
+	on all SellerActor1;
+	on all SellerActor2;
+	on all SellerActor3;
+	on all MarketActor;
+}

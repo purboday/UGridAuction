@@ -1,0 +1,77 @@
+// RIAPS ugrid_auction
+
+app UgridAuction {
+    message bid;
+    message announcement;
+    message buyerfreed;
+    message statusmsg;
+    message priceinfo;
+     
+	// buyer component
+    component Buyer {							
+      pub bidport : bid ;	// Publish port for Temperature messages 
+      sub freebuyer : buyerfreed;
+      pub statusport : statusmsg;
+      sub collect : priceinfo;
+      timer waitbid 200;
+    }
+    
+    // seller component
+    component Seller {
+      sub assignport : bid;	// Subscriber port to trigger component with Temperature messages
+      pub freebuyer : buyerfreed;
+      timer timeout 200;
+      sub notify : announcement;
+      pub sendprice : priceinfo;
+    }
+
+   // market component
+   component Market {
+   	 timer notify 1000;
+     pub announce : announcement;
+     sub statusport : buyerfreed;
+   }
+
+    // WeatherIndicator actor
+    actor BuyerActor1(buyernum = 1) {
+       {  
+          Buyer1 : Buyer(buyernum = 1);				
+       }
+    }
+
+    actor BuyerActor2(buyernum = 2) {
+       {  
+          Buyer2 : Buyer(buyernum = 2);				
+       }
+    }
+    
+    actor BuyerActor3(buyernum = 3) {
+       {  
+          Buyer3 : Buyer(buyernum = 3);				
+       }
+    }
+    
+    actor SellerActor1(sellernum = 1) {
+       {  
+          Seller1 : Seller(sellernum = 1);	
+       }
+    }
+
+    actor SellerActor2(sellernum = 2) {
+       {  
+          Seller2 : Seller(sellernum = 2);	
+       }
+    }
+    
+    actor SellerActor2(sellernum = 3) {
+       {  
+          Seller3 : Seller(sellernum = 3);	
+       }
+    }
+
+    actor MarketActor {
+       {  
+          Market : Market;	
+       }
+    }
+}
