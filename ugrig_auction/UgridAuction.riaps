@@ -6,72 +6,90 @@ app UgridAuction {
     message buyerfreed;
     message statusmsg;
     message priceinfo;
+    message assignack;
      
 	// buyer component
-    component Buyer {							
+    component Buyer(buyernum) {							
       pub bidport : bid ;	// Publish port for Temperature messages 
       sub freebuyer : buyerfreed;
       pub statusport : statusmsg;
       sub collect : priceinfo;
-      timer waitbid 200;
+      pub sendack : assignack;
+      sub prepare: announcement;
+      //timer waitbid 200;
     }
     
     // seller component
-    component Seller {
+    component Seller(sellernum) {
       sub assignport : bid;	// Subscriber port to trigger component with Temperature messages
       pub freebuyer : buyerfreed;
-      timer timeout 200;
+      //timer timeout 600;
       sub notify : announcement;
       pub sendprice : priceinfo;
+      sub recvack : assignack;
     }
 
    // market component
    component Market {
    	 timer notify 1000;
      pub announce : announcement;
-     sub statusport : buyerfreed;
+     sub statusport : statusmsg;
    }
 
     // WeatherIndicator actor
-    actor BuyerActor1(buyernum = 1) {
+    
+    actor BuyerActor(buyernum = '1') {
        {  
-          Buyer1 : Buyer(buyernum = 1);				
-       }
-    }
-
-    actor BuyerActor2(buyernum = 2) {
-       {  
-          Buyer2 : Buyer(buyernum = 2);				
+          Buyer : Buyer(buyernum = '1');				
        }
     }
     
-    actor BuyerActor3(buyernum = 3) {
+    actor SellerActor(sellernum = '3') {
        {  
-          Buyer3 : Buyer(buyernum = 3);				
+          Seller : Seller(sellernum = '3');	
        }
     }
     
-    actor SellerActor1(sellernum = 1) {
-       {  
-          Seller1 : Seller(sellernum = 1);	
-       }
-    }
-
-    actor SellerActor2(sellernum = 2) {
-       {  
-          Seller2 : Seller(sellernum = 2);	
-       }
-    }
-    
-    actor SellerActor2(sellernum = 3) {
-       {  
-          Seller3 : Seller(sellernum = 3);	
-       }
-    }
-
-    actor MarketActor {
+actor MarketActor {
        {  
           Market : Market;	
        }
+    }    
+    
+    actor BuyerActor1(buyernum = '1') {
+       {  
+          Buyer1 : Buyer(buyernum = '1');				
+       }
     }
+
+    actor BuyerActor2(buyernum = '2') {
+       {  
+          Buyer2 : Buyer(buyernum = '2');				
+       }
+    }
+    
+    actor BuyerActor3(buyernum = '3') {
+       {  
+          Buyer3 : Buyer(buyernum = '3');				
+       }
+    }
+    
+    actor SellerActor1(sellernum = '1') {
+       {  
+          Seller1 : Seller(sellernum = '1');	
+       }
+    }
+
+    actor SellerActor2(sellernum = '2') {
+       {  
+          Seller2 : Seller(sellernum = '2');	
+       }
+    }
+    
+    actor SellerActor3(sellernum = '3') {
+       {  
+          Seller3 : Seller(sellernum = '3');	
+       }
+    }
+
 }
